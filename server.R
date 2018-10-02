@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
                       arrange(Desc_Reg)
     
     # Maps
-    map_ST <- map_COUNTIES[map_COUNTIES$STATEFP == str_pad(unique(filter(county_corresp, STATE == state_selected)$STATEFP), 2, pad = "0"),]
+    map_ST <- map_counties[map_counties$STATEFP == str_pad(unique(filter(county_corresp, STATE == state_selected)$STATEFP), 2, pad = "0"),]
     
     
     df_mapa <- merge(map_ST, 
