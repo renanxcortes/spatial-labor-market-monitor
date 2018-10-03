@@ -30,10 +30,12 @@ shinyUI(fluidPage(
        column(6,
               leafletOutput("states_map"),
               br(),
-              leafletOutput("counties_map")),
+              leafletOutput("counties_map")
+            ),
        column(6,
               plotlyOutput("states_monitor"),
               br(),
-              plotlyOutput("counties_monitor"))
+              plotlyOutput("counties_monitor")
+              )
     )
 ))

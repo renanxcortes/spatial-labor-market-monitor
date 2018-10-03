@@ -1,7 +1,7 @@
 # Define server logic
 shinyServer(function(input, output) {
-  
-  
+
+
   output$states_map <- renderLeaflet({
 
     input_year  <- lubridate::year(ymd(input$date_maps))
@@ -43,10 +43,8 @@ shinyServer(function(input, output) {
                 values = ~UR)
 
   })
-  
-  
-  
-  
+
+
   
   
   output$counties_map <- renderLeaflet({
@@ -99,42 +97,44 @@ shinyServer(function(input, output) {
   
   
   
-  
+
   output$states_monitor <- renderPlotly({
-    
+
     input_year  <- lubridate::year(ymd(input$date_maps))
     input_month <- lubridate::month(ymd(input$date_maps))
-    
+
     base_aux_states = df_states %>%
                       filter(year == input_year,
                              month == input_month) %>%
-                      arrange(ST_Name)
-    
+                      arrange(ST_Name) #%>%
+                      #inner_join(data_clean_states_pop, by = c("year", "ST"))
+
     opacidade_cor <- 0.10
     cores_estagios <- c("green", "yellow", "red", "orange")
-    
+
     limite_cores_x <- 1.05 * max(abs(base_aux_states$Ace))
     limite_cores_y <- 1.05 * max(abs(base_aux_states$Var))
     f <- list(size = 14, color = "black")
-    
+
     base_aux_states %>%
-      plot_ly(x = ~Ace, 
-              y = ~Var, 
-              type = 'scatter', 
-              mode = 'markers', 
-              marker = 
+      plot_ly(x = ~Ace,
+              y = ~Var,
+              type = 'scatter',
+              mode = 'markers',
+              marker =
               list(size = ifelse(base_aux_states$ST_Name == "United States", 20, 10),
-                   #sizeref = .10, 
+                   #size = ~base_aux_states$Pop,
+                   #sizeref = .10,
                    color = ifelse(base_aux_states$ST_Name == "United States", "red","#004B82")#,
                    #symbol = 1:length(base_aux$State)
-              ),  
+              ),
               hoverinfo = "text",
               text = paste("", base_aux_states$ST_Name, "<br>",
                            "Growth: ", round(base_aux_states$Var, 3), "<br>",
                            "Acelleration: ", round(base_aux_states$Ace, 3)),
               showlegend = TRUE) %>%
       layout(title = paste0("Unemployment Rate Cycle of States"),
-             
+
              shapes = list(
                list(type = "rect",
                     fillcolor = cores_estagios[1], line = list(color = cores_estagios[1]), opacity = opacidade_cor,
@@ -156,7 +156,7 @@ shinyServer(function(input, output) {
                     x0 = 0, x1 = limite_cores_x, xref = "x",
                     y0 = -limite_cores_y, y1 = 0, yref = "y",
                     layer = "below")),
-             
+
              xaxis = list(
                zeroline = FALSE,
                showline = FALSE,
@@ -165,7 +165,7 @@ shinyServer(function(input, output) {
                title = "Acceleration (p.p.)",
                titlefont = f
              ),
-             
+
              yaxis = list(
                zeroline = FALSE,
                showline = FALSE,
@@ -174,8 +174,8 @@ shinyServer(function(input, output) {
                title = "Growth (%)",
                titlefont = f
              )
-             
-             
+
+
       ) %>%
       config(
         modeBarButtonsToRemove = list(
@@ -192,14 +192,9 @@ shinyServer(function(input, output) {
           'sendDataToCloud'
         )
       )
-    
+
   })
-  
-  
-  
-  
-  
-  
+
   
   
   
@@ -299,5 +294,7 @@ shinyServer(function(input, output) {
             )
   
   })
+  
+  
   
 })
