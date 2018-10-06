@@ -1,5 +1,14 @@
 # Define server logic
 shinyServer(function(input, output) {
+  
+  output$overview_title <- renderText({
+    
+    input_year  <- lubridate::year(ymd(input$date_maps))
+    input_month <- lubridate::month(ymd(input$date_maps))
+    
+    paste0("Labor Market overview of ", return_month(input_month), ", ", input_year)
+    
+  })
 
 
   output$states_map <- renderLeaflet({
@@ -8,8 +17,8 @@ shinyServer(function(input, output) {
     input_month <- lubridate::month(ymd(input$date_maps))
 
     base_aux_state <- df_states %>%
-                     filter(year == input_year,
-                            month == input_month)
+                      filter(year == input_year,
+                             month == input_month)
 
     # Maps
     df_mapa <- merge(map_states,
@@ -107,8 +116,8 @@ shinyServer(function(input, output) {
     base_aux_states = df_states %>%
                       filter(year == input_year,
                              month == input_month) %>%
-                      arrange(ST_Name) #%>%
-                      #inner_join(data_clean_states_pop, by = c("year", "ST"))
+                      arrange(ST_Name) %>%
+                      mutate(aux_pop = sqrt(Pop))
 
     opacidade_cor <- 0.10
     cores_estagios <- c("green", "yellow", "red", "orange")
@@ -123,18 +132,19 @@ shinyServer(function(input, output) {
               type = 'scatter',
               mode = 'markers',
               marker =
-              list(size = ifelse(base_aux_states$ST_Name == "United States", 20, 10),
-                   #size = ~base_aux_states$Pop,
-                   #sizeref = .10,
+              list(#size = ifelse(base_aux_states$ST_Name == "United States", 20, 10),
+                   size = ~base_aux_states$aux_pop,
+                   sizeref = max(base_aux_states$aux_pop, na.rm = T) * 0.0075,
                    color = ifelse(base_aux_states$ST_Name == "United States", "red","#004B82")#,
                    #symbol = 1:length(base_aux$State)
               ),
               hoverinfo = "text",
               text = paste("", base_aux_states$ST_Name, "<br>",
+                           "Pop. (1000 people): ", base_aux_states$Pop, "<br>",
                            "Growth: ", round(base_aux_states$Var, 3), "<br>",
                            "Acelleration: ", round(base_aux_states$Ace, 3)),
               showlegend = TRUE) %>%
-      layout(title = paste0("Unemployment Rate Cycle of States"),
+      layout(title = paste0("Unemployment Rate Cycle: States of US"),
 
              shapes = list(
                list(type = "rect",
@@ -206,11 +216,22 @@ shinyServer(function(input, output) {
     input_year  <- lubridate::year(ymd(input$date_maps))
     input_month <- lubridate::month(ymd(input$date_maps))
     
+    base_aux_benchm = df_states %>%
+                      filter(year == input_year,
+                             month == input_month,
+                             ST == state_selected) %>%
+                      mutate(aux_pop = sqrt(Pop)) %>%
+                      add_column(Desc_Reg = as.character(state_selected), .before = "ST_Name")
+    
     base_aux_county = df_counties %>%
                       filter(year == input_year,
                              month == input_month,
                              ST == state_selected) %>%
+                      mutate(aux_pop = sqrt(Pop)) %>%
+                      bind_rows(base_aux_benchm) %>%
                       arrange(Desc_Reg)
+    
+
     
     opacidade_cor <- 0.10
     cores_estagios <- c("green", "yellow", "red", "orange")
@@ -224,9 +245,9 @@ shinyServer(function(input, output) {
               y = ~Var, 
               type = 'scatter', 
               mode = 'markers', 
-              marker = list(#size = ifelse(base_aux$State == "US", 20, 10),
-                #sizeref = .10, 
-                #color = ifelse(base_aux$State == "US", "red","#004B82")#,
+              marker = list(size = ~base_aux_county$aux_pop,
+                            sizeref = max(base_aux_county$aux_pop, na.rm = T) * 0.01,
+                            color = ifelse(base_aux_county$Desc_Reg == state_selected, "red","#004B82")
                 #symbol = 1:length(base_aux$State)
               ),  
               hoverinfo = "text",

@@ -21,9 +21,13 @@ shinyUI(fluidPage(
                   timeFormat = "%Y-%m",
                   width = "90%",
                   step = 31, # Number of days in the slider variation
-                  animate = animationOptions(interval = 2500, loop = FALSE)), align = "center"),
+                  animate = animationOptions(interval = 1500, loop = FALSE)), align = "center"),
     
     hr(),
+    
+    div(h1(textOutput("overview_title")), align = "center"),
+    
+    br(),
     
     # Show the plots
     fluidRow(
