@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
     input_year  <- lubridate::year(ymd(input$date_maps))
     input_month <- lubridate::month(ymd(input$date_maps))
 
-    base_aux_state = df_states %>%
+    base_aux_state <- df_states %>%
                      filter(year == input_year,
                             month == input_month)
 
@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
                                    "#359800")), domain = df_mapa$UR)
 
     leaflet(data = df_mapa) %>%
-      addTiles('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png') %>%
+      addTiles() %>%
       addPolygons(weight = 0.5, # Border thichkness
                   fillColor = ~gradiente(df_mapa$UR),
                   color = "grey", # Border color
@@ -40,45 +40,46 @@ shinyServer(function(input, output) {
                                  "Ace.: ", round(df_mapa$Ace,2))) %>%
       addLegend(position = "bottomright",
                 pal = gradiente,
-                values = ~UR)
+                values = ~UR) %>%
+      setView(-100, 38, zoom = 3.5)
 
   })
 
 
-  
-  
+
+
   output$counties_map <- renderLeaflet({
-    
+
     state_selected <- input$state
     input_year  <- lubridate::year(ymd(input$date_maps))
     input_month <- lubridate::month(ymd(input$date_maps))
-    
+
     base_aux_county = df_counties %>%
                       filter(year == input_year,
                              month == input_month,
-                             ST == state_selected) %>%
-                      arrange(Desc_Reg)
-    
+                             ST == state_selected)# %>%
+                      #arrange(Desc_Reg)
+
     # Maps
     map_ST <- map_counties[map_counties$STATEFP == str_pad(unique(filter(county_corresp, STATE == state_selected)$STATEFP), 2, pad = "0"),]
-    
-    
-    df_mapa <- merge(map_ST, 
-                     base_aux_county, 
+
+
+    df_mapa <- merge(map_ST,
+                     base_aux_county,
                      by.x = "NAMELSAD",
                      by.y = "Desc_Reg")
-    
-    
-    gradiente = colorNumeric(rev(c("#6A1103", 
-                                   "#BA0004", 
-                                   "#E7400B", 
-                                   "#FEA527", 
-                                   "#FDFE65", 
-                                   "#9CE400", 
+
+
+    gradiente = colorNumeric(rev(c("#6A1103",
+                                   "#BA0004",
+                                   "#E7400B",
+                                   "#FEA527",
+                                   "#FDFE65",
+                                   "#9CE400",
                                    "#359800")), domain = df_mapa$UR)
-    
-    leaflet(data = df_mapa) %>% 
-      addTiles('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png') %>%
+
+    leaflet(data = df_mapa) %>%
+      addTiles() %>%
       addPolygons(weight = 0.5, # Border thichkness
                   fillColor = ~gradiente(df_mapa$UR),
                   color = "grey", # Border color
@@ -87,11 +88,11 @@ shinyServer(function(input, output) {
                   popup = paste0("<b>",df_mapa$NAMELSAD,"</b>", "<br>",
                                  "Rate: ", df_mapa$UR, "<br>",
                                  "Var.: ", round(df_mapa$Var,2), "<br>",
-                                 "Ace.: ", round(df_mapa$Ace,2))) %>% 
-      addLegend(position = "bottomright", 
+                                 "Ace.: ", round(df_mapa$Ace,2))) %>%
+      addLegend(position = "bottomright",
                 pal = gradiente,
                 values = ~UR)
-    
+
   })
   
   

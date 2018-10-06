@@ -28,9 +28,9 @@ shinyUI(fluidPage(
     # Show the plots
     fluidRow(
        column(6,
-              leafletOutput("states_map"),
-              br(),
-              leafletOutput("counties_map")
+               leafletOutput("states_map"),
+               br(),
+               leafletOutput("counties_map")
             ),
        column(6,
               plotlyOutput("states_monitor"),
