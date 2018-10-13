@@ -15,8 +15,10 @@ select <- dplyr::select
 filter <- dplyr::filter
 
 # Auxiliary Functions
-calculate_acum_growth_S_months    <- function(x, s) { aux <- rollapply(x, width = s, FUN = sum); return(c(rep(NA, s - 1),(aux / lag(aux, s) - 1) * 100)) }
-calc_ace <- function(x) {aux <- diff(x); return(c(NA, aux))}
+calculate_acum_growth_S_months    <- function(x, s) { aux <- rollapply(x, width = s, FUN = sum); 
+                                                      return(c(rep(NA, s - 1),(aux / lag(aux, s) - 1) * 100)) }
+calc_ace <- function(x) {aux <- diff(x); 
+                         return(c(NA, aux))}
 
 return_month <- Vectorize(function(num_mon) {switch(as.character(num_mon),
                                                    "1" = "January",

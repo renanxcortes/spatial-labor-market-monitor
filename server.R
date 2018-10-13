@@ -117,7 +117,8 @@ shinyServer(function(input, output) {
                       filter(year == input_year,
                              month == input_month) %>%
                       arrange(ST_Name) %>%
-                      mutate(aux_pop = sqrt(Pop))
+                      mutate(aux_pop = sqrt(Pop)) #%>%
+                      #inner_join(select(tab_ok, -ST_Name), by = "ST")
 
     opacidade_cor <- 0.10
     cores_estagios <- c("green", "yellow", "red", "orange")
@@ -131,11 +132,13 @@ shinyServer(function(input, output) {
               y = ~Var,
               type = 'scatter',
               mode = 'markers',
+              #color = base_aux_states$wl,
               marker =
               list(#size = ifelse(base_aux_states$ST_Name == "United States", 20, 10),
                    size = ~base_aux_states$aux_pop,
-                   sizeref = max(base_aux_states$aux_pop, na.rm = T) * 0.0075,
+                   sizeref = 556.182 * 0.0075, #max(base_aux_states$aux_pop, na.rm = T) * 0.0075,
                    color = ifelse(base_aux_states$ST_Name == "United States", "red","#004B82")#,
+                   #color = ~base_aux_states$wl
                    #symbol = 1:length(base_aux$State)
               ),
               hoverinfo = "text",
