@@ -6,6 +6,8 @@ library(data.table)
 library(rmapshaper)
 library(lubridate)
 library(mFilter)
+library(shinythemes)
+library(crosstalk)
 
 # To avoid masking
 select <- dplyr::select
