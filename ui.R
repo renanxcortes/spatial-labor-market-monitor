@@ -1,6 +1,13 @@
 # Define UI for application
 shinyUI(fluidPage(
   
+  # Inspired by https://stackoverflow.com/questions/39858767/clear-plotly-click-event
+  useShinyjs(),
+  # code to reset plotlys event_data("plotly_click", source="counties_monitor") to NULL -> executed upon some event
+  # note that you need to add plotly source string if used
+  extendShinyjs(text = "shinyjs.resetClick = function() { Shiny.onInputChange('.clientValue-plotly_click-counties_monitor', 'null'); }"),
+  
+  
   theme = shinytheme("readable"), # readable
   # cerulean, cosmo, cyborg, darkly, flatly, journal, lumen
   
@@ -58,7 +65,7 @@ shinyUI(fluidPage(
              
     tabPanel("Maps and Macroeconomics Dynamics", 
              
-      verbatimTextOutput("hover"),
+      verbatimTextOutput("desc_event"),
     
       div(sliderInput("date_maps",
                   "Choose the Month and the Year of analysis:",

@@ -7,7 +7,8 @@ library(rmapshaper)
 library(lubridate)
 library(mFilter)
 library(shinythemes)
-library(crosstalk)
+#library(crosstalk)
+library(shinyjs)
 
 # To avoid masking
 select <- dplyr::select
@@ -44,6 +45,9 @@ return_month <- Vectorize(function(num_mon) {switch(as.character(num_mon),
                                                     "10" = "October",
                                                     "11" = "November",
                                                     "12" = "December")})
+
+
+
 
 
 

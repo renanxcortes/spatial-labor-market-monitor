@@ -64,8 +64,7 @@ output$counties_map <- renderLeaflet({
     addPolygons(data = df_mapa[df_mapa@data$NAMELSAD == clicked_county(),], 
                 fill = FALSE, 
                 color = '#141400',
-                opacity = 10,
-                layerId = 'sel_county') %>%
+                opacity = 10) %>%
     
     addPolygons(weight = 0.5, # Border thichkness
                 fillColor = ~gradiente(df_mapa$UR),
@@ -75,7 +74,8 @@ output$counties_map <- renderLeaflet({
                 popup = paste0("<b>",df_mapa$NAMELSAD,"</b>", "<br>",
                                "Rate: ", df_mapa$UR, "<br>",
                                "Var.: ", round(df_mapa$Var,2), "<br>",
-                               "Ace.: ", round(df_mapa$Ace,2))) %>%
+                               "Ace.: ", round(df_mapa$Ace,2)),
+                layerId = ~df_mapa$NAMELSAD) %>%
     
     addLegend(position = "bottomright",
               pal = gradiente,
@@ -127,13 +127,23 @@ county_map_click <- eventReactive(input$counties_map_shape_click, {
   
   y <- x$id
   
-  return(y)
+  return(x)
+  
+  },
+  
+  ignoreNULL = FALSE) # This argument needs, in order to be able to do something when the event is not triggered
+
+
+# Util object to inspect reactive element in shiny
+output$desc_event <- renderPrint({
+  
+  is.null(county_map_click()$id)
   
 })
 
-observe({
-  
-  updateSelectInput(session, 'counties_monitor', selected = county_map_click())
-  
-})
+#observe({
+#  
+#  updateSelectInput(session, 'counties_monitor', selected = county_map_click())
+#  
+#})
 
