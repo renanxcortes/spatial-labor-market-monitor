@@ -66,7 +66,9 @@ output$counties_map <- renderLeaflet({
                 color = '#141400',
                 opacity = 10) %>%
     
-    addPolygons(weight = 0.5, # Border thichkness
+    addPolygons(layerId = ~df_mapa$NAMELSAD,
+                
+                weight = 0.5, # Border thichkness
                 fillColor = ~gradiente(df_mapa$UR),
                 color = "grey", # Border color
                 fillOpacity = 0.5, # Transparency
@@ -74,8 +76,7 @@ output$counties_map <- renderLeaflet({
                 popup = paste0("<b>",df_mapa$NAMELSAD,"</b>", "<br>",
                                "Rate: ", df_mapa$UR, "<br>",
                                "Var.: ", round(df_mapa$Var,2), "<br>",
-                               "Ace.: ", round(df_mapa$Ace,2)),
-                layerId = ~df_mapa$NAMELSAD) %>%
+                               "Ace.: ", round(df_mapa$Ace,2))) %>%
     
     addLegend(position = "bottomright",
               pal = gradiente,
@@ -100,7 +101,15 @@ output$states_map <- renderLeaflet({
   
   leaflet(data = df_mapa) %>%
     addTiles() %>%
-    addPolygons(weight = 0.5, # Border thichkness
+    
+    addPolygons(data = df_mapa[df_mapa@data$ST_Name == clicked_state(),], 
+                fill = FALSE, 
+                color = '#141400',
+                opacity = 10) %>%
+    
+    addPolygons(layerId = ~df_mapa$ST_Name,
+                
+                weight = 0.5, # Border thichkness
                 fillColor = ~gradiente(df_mapa$UR),
                 color = "grey", # Border color
                 fillOpacity = 0.5, # Transparency
@@ -134,10 +143,29 @@ county_map_click <- eventReactive(input$counties_map_shape_click, {
   ignoreNULL = FALSE) # This argument needs, in order to be able to do something when the event is not triggered
 
 
+state_map_click <- eventReactive(input$states_map_shape_click, {
+  
+  x <- input$states_map_shape_click # "_shape_click" is created internally by leaflet
+  
+  y <- x$id
+  
+  return(x)
+  
+},
+
+ignoreNULL = FALSE) # This argument needs, in order to be able to do something when the event is not triggered
+
+
+
+
+
 # Util object to inspect reactive element in shiny
 output$desc_event <- renderPrint({
   
-  is.null(county_map_click()$id)
+  #is.null(county_state()$id)
+  clicked_state()
+  #state_map_click()
+  #is.null(clicked_state()$id)
   
 })
 

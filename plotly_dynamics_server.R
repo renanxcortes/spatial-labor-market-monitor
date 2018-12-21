@@ -187,6 +187,17 @@ output$states_monitor <- renderPlotly({
   limite_cores_y <- 1.05 * max(abs(base_aux_states$Var))
   f <- list(size = 14, color = "black")
   
+  
+  if (is.null(state_map_click())){
+    
+    symbols = 0
+    
+  } else {
+    
+    symbols = ifelse(base_aux_states$ST_Name == state_map_click()$id, 17, 0)
+    
+  }
+  
   base_aux_states %>%
     plot_ly(source = "states_monitor",
             x = ~Ace,
@@ -198,9 +209,9 @@ output$states_monitor <- renderPlotly({
               list(#size = ifelse(base_aux_states$ST_Name == "United States", 20, 10),
                 size = ~base_aux_states$aux_pop,
                 sizeref =  max(base_aux_states$aux_pop, na.rm = T) * 0.01, # 556.182 * 0.0075,
-                color = ifelse(base_aux_states$ST_Name == "United States", "red","#004B82")#,
+                color = ifelse(base_aux_states$ST_Name == "United States", "red","#004B82"),
                 #color = ~base_aux_states$wl
-                #symbol = 1:length(base_aux$State)
+                symbol = symbols
               ),
             hoverinfo = "text",
             text = paste("", base_aux_states$ST_Name, "<br>",
@@ -292,14 +303,28 @@ clicked_state <- reactive({
   if (is.null(d)) return("Click not clicked") else 
     
     return(
-      states_monitor_data()[d[["pointNumber"]] + 1,]$Desc_Reg # Sum one because javascript is zero index based
+      states_monitor_data()[d[["pointNumber"]] + 1,]$ST_Name # Sum one because javascript is zero index based
     )
   
 })
 
 observe({
   
-  updateSelectInput(session, 'counties_monitor', selected = county_map_click())
+  if(!is.null(state_map_click()$id)){
+  
+  updateSelectInput(session, 'state', selected = state_map_click()$id)
+    
+  }
+  
+})
+
+observe({
+  
+  if(clicked_state() != "Click not clicked"){
+    
+    updateSelectInput(session, 'state', selected = clicked_state())
+    
+  }
   
 })
 

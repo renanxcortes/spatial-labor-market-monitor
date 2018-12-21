@@ -10,8 +10,6 @@ shinyUI(fluidPage(
   
   theme = shinytheme("readable"), # readable
   # cerulean, cosmo, cyborg, darkly, flatly, journal, lumen
-  
-             
              
    fluidRow(
      column(12, align="center",
