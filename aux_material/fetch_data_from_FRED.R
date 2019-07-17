@@ -93,8 +93,11 @@ return_state <- Vectorize(function(state_initial) {switch(as.character(state_ini
 extract_4_upper <- function(x) {x %>% str_replace_all(" ", "") %>% toupper %>% str_sub(1, 4)}
 
 # Maps
-map_STATES   <- readOGR("C:\\Users\\renan\\Desktop\\CSI Project\\cb_2017_us_state_500k", 'cb_2017_us_state_500k')
-map_COUNTIES <- readOGR("C:\\Users\\renan\\Desktop\\CSI Project\\tl_2017_us_county", 'tl_2017_us_county')
+#map_STATES   <- readOGR("C:\\Users\\renan\\Desktop\\CSI Project\\cb_2017_us_state_500k", 'cb_2017_us_state_500k')
+#map_COUNTIES <- readOGR("C:\\Users\\renan\\Desktop\\CSI Project\\tl_2017_us_county", 'tl_2017_us_county')
+
+map_STATES   <- readRDS('../data/map_states_simplified.rds')
+map_COUNTIES <- readRDS('../data/map_counties_simplified.rds')
 
 
 # County correspondence table and List of US States initials

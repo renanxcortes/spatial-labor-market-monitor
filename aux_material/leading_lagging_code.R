@@ -1,3 +1,6 @@
+# This code tries to create the labels of either leading, lagging or coincident for the spatial units of the app
+# Draw inspiration from Colombo, J. A., Cortes, R. X., Cruz, F. I., and Paese, L. H. (2018). Building State-Level Business Cycle Tracer Tools: Evidence from a Large Emerging Economy. International Journal of Economics and Finance, 10(5), 14.
+
 library(shiny)
 library(leaflet)
 library(tidyverse)
