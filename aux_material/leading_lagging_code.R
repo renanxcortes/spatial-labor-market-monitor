@@ -20,16 +20,16 @@ select <- dplyr::select
 filter <- dplyr::filter
 
 
-county_corresp <- readRDS('county_corresp.rds')
+county_corresp <- readRDS('../data/county_corresp.rds')
 
-df_states_pre    <- readRDS("df_states.rds")
-df_counties_pre  <- readRDS("df_counties.rds")
-map_counties <- readRDS("map_counties_simplified.rds") # ms_simplify(readRDS("map_counties.rds"))
-map_states   <- readRDS("map_states_simplified.rds") # ms_simplify(readRDS("map_states.rds"))
+df_states_pre    <- readRDS("../data/df_states.rds")
+df_counties_pre  <- readRDS("../data/df_counties.rds")
+map_counties <- readRDS("../data/map_counties_simplified.rds") # ms_simplify(readRDS("map_counties.rds"))
+map_states   <- readRDS("../data/map_states_simplified.rds") # ms_simplify(readRDS("map_states.rds"))
 
 
-states_pop   <- readRDS("states_yearly_population.rds")
-counties_pop <- readRDS("counties_yearly_population.rds")
+states_pop   <- readRDS("../data/states_yearly_population.rds")
+counties_pop <- readRDS("../data/counties_yearly_population.rds")
 
 df_states <- df_states_pre %>%
              left_join(states_pop, by = c("ST" = "ST", "year" = "year")) #%>%
